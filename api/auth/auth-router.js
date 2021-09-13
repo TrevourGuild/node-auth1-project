@@ -1,5 +1,8 @@
 // Require `checkUsernameFree`, `checkUsernameExists` and `checkPasswordLength`
 // middleware functions from `auth-middleware.js`. You will need them here!
+const router = require('express').Router()
+const User = require('../users/users-model')
+const bcrypt = require('bcryptjs')
 
 
 /**
@@ -24,6 +27,11 @@
     "message": "Password must be longer than 3 chars"
   }
  */
+router.post('/register', async (req, res, next) =>{
+
+})
+
+
 
 
 /**
@@ -42,6 +50,10 @@
   }
  */
 
+router.post('login', async (req, res, next) =>{
+
+})
+
 
 /**
   3 [GET] /api/auth/logout
@@ -59,5 +71,10 @@
   }
  */
 
+  router.get('/logout', (req, res, next) =>{
+    
+  })
+
  
 // Don't forget to add the router to the `exports` object so it can be required in other modules
+module.exports = router
