@@ -28,7 +28,7 @@ const bcrypt = require('bcryptjs')
   }
  */
 router.post('/register', async (req, res, next) =>{
-
+  res.json('register')
 })
 
 
@@ -50,8 +50,8 @@ router.post('/register', async (req, res, next) =>{
   }
  */
 
-router.post('login', async (req, res, next) =>{
-
+router.post('/login', async (req, res, next) =>{
+  res.json('login')
 })
 
 
@@ -72,7 +72,7 @@ router.post('login', async (req, res, next) =>{
  */
 
   router.get('/logout', (req, res, next) =>{
-    
+    res.json('logout')
   })
 
  

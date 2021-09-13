@@ -1,4 +1,4 @@
-const db = require('../../data/db-config')
+// const db = require('../../data/db-config')
 
 /*
   If the user does not have a session saved in the server
@@ -8,8 +8,20 @@ const db = require('../../data/db-config')
     "message": "You shall not pass!"
   }
 */
-function restricted() {
-
+async function restricted(req, res, next) {
+    // try{
+    //   const userSession = req.session.userSession
+    //   if(!userSession){
+    //    res.status(401).json({
+    //      message: 'You shall not pass!'
+    //    })
+    //   } else{
+    //     res.json('welcome back')
+    //   }
+    // } catch (err){
+    //   next(err)
+    // }
+    next()
 }
 
 /*
@@ -20,8 +32,8 @@ function restricted() {
     "message": "Username taken"
   }
 */
-function checkUsernameFree() {
-
+function checkUsernameFree(req, res, next) {
+  next()
 }
 
 /*
@@ -32,8 +44,8 @@ function checkUsernameFree() {
     "message": "Invalid credentials"
   }
 */
-function checkUsernameExists() {
-
+function checkUsernameExists(req, res, next) {
+  next()
 }
 
 /*
@@ -44,8 +56,15 @@ function checkUsernameExists() {
     "message": "Password must be longer than 3 chars"
   }
 */
-function checkPasswordLength() {
-
+function checkPasswordLength(req, res, next) {
+  next()
 }
 
 // Don't forget to add these to the `exports` object so they can be required in other modules
+module.exports = {
+  restricted,
+  checkUsernameFree,
+  checkUsernameExists,
+  checkPasswordLength
+
+}
