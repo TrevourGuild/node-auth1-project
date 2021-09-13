@@ -1,4 +1,4 @@
-// const db = require('../../data/db-config')
+const User = require('../users/users-model')
 
 /*
   If the user does not have a session saved in the server
@@ -9,19 +9,11 @@
   }
 */
 async function restricted(req, res, next) {
-    // try{
-    //   const userSession = req.session.userSession
-    //   if(!userSession){
-    //    res.status(401).json({
-    //      message: 'You shall not pass!'
-    //    })
-    //   } else{
-    //     res.json('welcome back')
-    //   }
-    // } catch (err){
-    //   next(err)
-    // }
-    next()
+    if(req.session.user) {
+      next()
+    } else {
+      next({ status: 401, message: 'You shall not pass'})
+    }
 }
 
 /*
@@ -32,8 +24,17 @@ async function restricted(req, res, next) {
     "message": "Username taken"
   }
 */
-function checkUsernameFree(req, res, next) {
-  next()
+async function checkUsernameFree(req, res, next) {
+  try{
+    const users = await User.findBy({ username: req.body.username })
+    if(!users.length){
+      next()
+    } else {
+      next({message: "Username taken", status: 422})
+    }
+  } catch (err) {
+    next(err)
+  }
 }
 
 /*
@@ -44,8 +45,17 @@ function checkUsernameFree(req, res, next) {
     "message": "Invalid credentials"
   }
 */
-function checkUsernameExists(req, res, next) {
-  next()
+async function checkUsernameExists(req, res, next) {
+  try{
+    const users = await User.findBy({ username: req.body.username })
+    if(users.length){
+      next()
+    } else {
+      next({message: "Invalid credentials", status: 401})
+    }
+  } catch (err) {
+    next(err)
+  }
 }
 
 /*
@@ -57,7 +67,11 @@ function checkUsernameExists(req, res, next) {
   }
 */
 function checkPasswordLength(req, res, next) {
-  next()
+ if(!req.body.password || req.body.password.length < 3) {
+   next ({ message: "Password must be longer than 3 chars", status: 422 })
+ } else {
+   next()
+ }
 }
 
 // Don't forget to add these to the `exports` object so they can be required in other modules

@@ -2,6 +2,8 @@ const express = require("express");
 const helmet = require("helmet");
 const cors = require("cors");
 const session = require('express-session');
+const Store = require('connect-session-knex')(session);
+const knex = require('../data/db-config')
 
 const usersRouter = require('./users/users-router');
 const authRouter = require('./auth/auth-router');
@@ -21,15 +23,23 @@ const authRouter = require('./auth/auth-router');
 const server = express();
 
 server.use(session({
-  name: 'monkey', // the name of the cookie the server will place on the client (session id)
-    secret: 'nobody tosses a dwarf!', // put this in the environment, not the code!!!
-    cookie: {
-      maxAge: 1 * 24 * 60 * 60 * 1000,
-      secure: false, // in prod it should be true: only https!
-    }, 
-    httpOnly: true, // don't let JS code access cookies. Browser extensions run JS code on your browser!
-    resave: false, // IGNORE, some libs need this 
-    saveUninitialized: false, // only save a session if user approves
+  name: 'chocolatechip', // the name of the cookie the server will place on the client (session id)
+  secret: 'shh', // put this in the environment, not the code!!! 
+  resave: false, // IGNORE, some libs need this 
+  saveUninitialized: false, // only save a session if user approves
+  store: new Store({
+    knex,
+    createTable: true,
+    clearInterval: 1000 * 60 * 10,
+    tablename: 'sessions', 
+    sidfieldname: 'sid',
+  }),
+  cookie: {
+    maxAge: 1000 * 60 * 10,
+    secure: false, 
+    httpOnly: true, 
+    // sameSite: 'none'
+  }
 }))
 
 server.use('/api/users', usersRouter);
