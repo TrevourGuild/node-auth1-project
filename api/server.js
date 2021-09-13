@@ -1,6 +1,10 @@
 const express = require("express");
 const helmet = require("helmet");
 const cors = require("cors");
+const session = require('express-session');
+
+const usersRouter = require('./users/users-router');
+const authRouter = require('./auth/auth-router');
 
 /**
   Do what needs to be done to support sessions with the `express-session` package!
@@ -14,8 +18,22 @@ const cors = require("cors");
   The session can be persisted in memory (would not be adecuate for production)
   or you can use a session store like `connect-session-knex`.
  */
-
 const server = express();
+
+server.use(session({
+  name: 'monkey', // the name of the cookie the server will place on the client (session id)
+    secret: 'nobody tosses a dwarf!', // put this in the environment, not the code!!!
+    cookie: {
+      maxAge: 1 * 24 * 60 * 60 * 1000,
+      secure: false, // in prod it should be true: only https!
+    }, 
+    httpOnly: true, // don't let JS code access cookies. Browser extensions run JS code on your browser!
+    resave: false, // IGNORE, some libs need this 
+    saveUninitialized: false, // only save a session if user approves
+}))
+
+server.use('/api/users', usersRouter);
+server.use('/api/auth', authRouter);
 
 server.use(helmet());
 server.use(express.json());
